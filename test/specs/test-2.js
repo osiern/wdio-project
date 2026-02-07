@@ -8,27 +8,38 @@ describe('WebdriverIO docs smoke', () => {
   });
 
   it('Перейти в раздел API', async () => {
-    await $('a[href="/docs/api"]').click();
+    const apiLink = await $('a[href="/docs/api"]');
+    await apiLink.waitForClickable();
+    await apiLink.click();
+
+    const header = await $('article h1');
+    await header.waitForDisplayed();
 
     await expect(browser).toHaveUrl(expect.stringContaining('/docs/api'));
-    await expect($('article h1')).toHaveText(expect.stringContaining('Introduction'));
+    await expect(header).toHaveText(expect.stringContaining('Introduction'));
   });
 
   it('Проверить ссылку JSON Wire Protocol', async () => {
     await browser.url('https://webdriver.io/docs/api/protocols');
 
-    const link = await $('=JSON Wire Protocol').$('a');
+    const link = await $('a=JSON Wire Protocol');
+    await link.waitForDisplayed();
 
-    await expect(link).toHaveAttribute('href', expect.stringContaining('#'));
+    await expect(link).toHaveAttribute(
+      'href',
+      expect.stringContaining('selenium.dev')
+    );
   });
 
   it('Поиск работает и принимает текст', async () => {
-    await $('.DocSearch-Button').click();
+    const searchBtn = await $('.DocSearch-Button');
+    await searchBtn.waitForClickable();
+    await searchBtn.click();
 
     const input = await $('.DocSearch-Input');
+    await input.waitForDisplayed();
 
     await input.setValue('test is DONE!');
-
     await expect(input).toHaveValue('test is DONE!');
 
     await browser.keys('Escape');
