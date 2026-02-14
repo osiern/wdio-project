@@ -1,4 +1,4 @@
-describe('Первая домашняя работа', () => {
+describe('Смоук сайта WEBDRIVER.IO, тест №1', () => {
   it('Открываем сайт', async () => {
     await browser.url('https://webdriver.io/');
 
@@ -52,7 +52,6 @@ describe('Первая домашняя работа', () => {
     await searchBtn.click();
 
     const searchInput = await $('.DocSearch-Input');
-
     await searchInput.setValue('test is ');
     await browser.pause(3000);
 
