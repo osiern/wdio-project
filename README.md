@@ -56,14 +56,48 @@ npm install
 
 ## Запуск тестов
 
+### Запуск всех тестов
+
 ```bash
 npx wdio run wdio.conf.js
 ```
 
-или
+или, если настроен скрипт `test` в `package.json`:
 
 ```bash
 npm test
+```
+
+### Запуск одного теста
+
+Для запуска конкретного тестового файла используется параметр `--spec`.
+
+Например, запуск `test-3.js`:
+
+```bash
+npx wdio run wdio.conf.js --spec ./test/specs/test-3.js
+```
+
+### Запуск других тестов
+
+```bash
+npx wdio run wdio.conf.js --spec ./test/specs/test-1.js
+```
+
+```bash
+npx wdio run wdio.conf.js --spec ./test/specs/test-2.js
+```
+
+```bash
+npx wdio run wdio.conf.js --spec ./test/specs/test-4.js
+```
+
+### Запуск через npm
+
+Если в `package.json` настроен скрипт `"test": "wdio run ./wdio.conf.js"`, можно использовать:
+
+```bash
+npm test -- --spec ./test/specs/test-3.js
 ```
 
 ---
@@ -92,6 +126,8 @@ describe('WebdriverIO docs smoke', () => {
 
 ## Отчёты Allure
 
+При настроенном Allure Reporter и установленном Allure CLI:
+
 ```bash
 npx allure generate allure-results --clean -o allure-report
 npx allure open allure-report
@@ -101,14 +137,26 @@ npx allure open allure-report
 
 ## Структура проекта
 
-```
+```text
 .
-├── tests/
-│   └── webdriverio.smoke.js
-├── wdio.conf.js
-├── package.json
+├── test/
+│   ├── pageobjects/
+│   │   ├── login.page.js
+│   │   ├── page.js
+│   │   └── secure.page.js
+│   └── specs/
+│       ├── test-1.js
+│       ├── test-2.js
+│       ├── test-3.js
+│       ├── test-4.js
+│       └── test.e2e.js
 ├── .gitignore
-└── README.md
+├── header.png
+├── postHeaderTitle.png
+├── package-lock.json
+├── package.json
+├── README.md
+└── wdio.conf.js
 ```
 
 ---
