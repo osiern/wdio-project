@@ -1,41 +1,37 @@
 # WebdriverIO Smoke & UI Tests
 
-Проект автоматизированного UI-тестирования на базе **WebdriverIO**.  
-Содержит набор smoke-тестов для проверки базовой навигации и ключевых элементов сайта документации WebdriverIO.
+Проект автоматизированного UI-тестирования на базе **WebdriverIO**.
+Содержит тестовые сценарии для проверки навигации и элементов интерфейса сайта документации WebdriverIO.
 
 ---
 
 ## Описание
 
-Тесты демонстрируют:
+Тесты предназначены для практики:
 
-- навигацию по страницам;
-- работу с селекторами;
+- навигации по страницам;
+- работы с CSS-селекторами;
 - проверки URL, title и текста страницы;
-- взаимодействие с полями ввода и клавиатурой;
-- базовые возможности WebdriverIO для UI-smoke сценариев.
+- взаимодействия с элементами интерфейса;
+- использования асинхронного JavaScript и проверок WebdriverIO.
 
-Проект подходит как шаблон для старта UI-автоматизации на WDIO.
+Проект можно использовать как основу для изучения UI-автоматизации на WDIO.
 
 ---
 
 ## Технологический стек
 
-- JavaScript / TypeScript
+- JavaScript
+- Node.js и npm
 - WebdriverIO (WDIO testrunner)
-- Node.js
-- Allure Reports
-- @wdio/cli
-- @wdio/local-runner
+
+Наличие и настройки дополнительных репортёров и пакетов определяются файлами `package.json` и `wdio.conf.js`.
 
 ---
 
 ## Требования
 
-Перед запуском убедитесь, что установлены:
-
-- Node.js ≥ 18
-- npm ≥ 9
+Необходимо установить Node.js и npm. Поддерживаемые версии зависят от версии WebdriverIO в `package.json`.
 
 Проверка версий:
 
@@ -47,6 +43,8 @@ npm -v
 ---
 
 ## Установка зависимостей
+
+В корне проекта выполните:
 
 ```bash
 npm install
@@ -62,39 +60,31 @@ npm install
 npx wdio run wdio.conf.js
 ```
 
-или, если настроен скрипт `test` в `package.json`:
+Команда запускает тесты, выбранные настройками `wdio.conf.js`.
+
+Если в `package.json` определён скрипт `test` для запуска WDIO, можно использовать:
 
 ```bash
 npm test
 ```
 
-### Запуск одного теста
+### Запуск отдельного файла
 
-Для запуска конкретного тестового файла используется параметр `--spec`.
-
-Например, запуск `test-3.js`:
+Например, для `test-3.js`:
 
 ```bash
 npx wdio run wdio.conf.js --spec ./test/specs/test-3.js
 ```
 
-### Запуск других тестов
+Аналогично для других файлов:
 
 ```bash
 npx wdio run wdio.conf.js --spec ./test/specs/test-1.js
-```
-
-```bash
 npx wdio run wdio.conf.js --spec ./test/specs/test-2.js
-```
-
-```bash
 npx wdio run wdio.conf.js --spec ./test/specs/test-4.js
 ```
 
-### Запуск через npm
-
-Если в `package.json` настроен скрипт `"test": "wdio run ./wdio.conf.js"`, можно использовать:
+Если скрипт `test` в `package.json` запускает WDIO и передаёт ему аргументы, можно использовать:
 
 ```bash
 npm test -- --spec ./test/specs/test-3.js
@@ -106,32 +96,15 @@ npm test -- --spec ./test/specs/test-3.js
 
 ```javascript
 describe('WebdriverIO docs smoke', () => {
-
   it('Открыть главную страницу', async () => {
     await browser.url('https://webdriver.io/');
     await expect(browser).toHaveUrl('https://webdriver.io/');
     await expect(browser).toHaveTitle(expect.stringContaining('WebdriverIO'));
   });
-
-  it('Перейти в раздел API', async () => {
-    await $('a[href="/docs/api"]').click();
-    await expect(browser).toHaveUrl(expect.stringContaining('/docs/api'));
-    await expect($('article h1')).toHaveText(expect.stringContaining('Introduction'));
-  });
-
 });
 ```
 
----
-
-## Отчёты Allure
-
-При настроенном Allure Reporter и установленном Allure CLI:
-
-```bash
-npx allure generate allure-results --clean -o allure-report
-npx allure open allure-report
-```
+Это иллюстративный пример, а не подтверждённое содержимое файлов проекта.
 
 ---
 
@@ -151,19 +124,32 @@ npx allure open allure-report
 │       ├── test-4.js
 │       └── test.e2e.js
 ├── .gitignore
-├── header.png
-├── postHeaderTitle.png
 ├── package-lock.json
 ├── package.json
 ├── README.md
 └── wdio.conf.js
 ```
 
+Структура приведена по ранее показанному проекту; служебные файлы и изображения могут присутствовать дополнительно.
+
+---
+
+## Отчёты
+
+Типы отчётов и пути их сохранения зависят от настройки `reporters` в `wdio.conf.js`.
+
+Если подключён Allure Reporter, результаты сохраняются в `allure-results`, а Allure CLI доступен, отчёт можно сформировать командами:
+
+```bash
+npx allure generate allure-results --clean -o allure-report
+npx allure open allure-report
+```
+
 ---
 
 ## CI / GitHub Actions
 
-Проект может быть использован с GitHub Actions для автоматического запуска тестов при `push` и `pull_request`.
+Тесты можно запускать в CI, например через GitHub Actions. Наличие настроенного workflow в текущем проекте не подтверждено.
 
 ---
 
