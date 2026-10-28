@@ -1,123 +1,106 @@
 # WebdriverIO Smoke & UI Tests
 
-Проект автоматизированного UI-тестирования на базе **WebdriverIO**.
-Содержит тестовые сценарии для проверки навигации и элементов интерфейса сайта документации WebdriverIO.
+Учебный проект автоматизированного UI-тестирования на **JavaScript + WebdriverIO + Mocha**.
 
----
-
-## Описание
-
-Тесты предназначены для практики:
-
-- навигации по страницам;
-- работы с CSS-селекторами;
-- проверки URL, title и текста страницы;
-- взаимодействия с элементами интерфейса;
-- использования асинхронного JavaScript и проверок WebdriverIO.
-
-Проект можно использовать как основу для изучения UI-автоматизации на WDIO.
+Содержит тесты для проверки навигации, элементов интерфейса и авторизации на GitHub, а также учебные тесты сайта документации WebdriverIO.
 
 ---
 
 ## Технологический стек
 
 - JavaScript
-- Node.js и npm
-- WebdriverIO (WDIO testrunner)
-
-Наличие и настройки дополнительных репортёров и пакетов определяются файлами `package.json` и `wdio.conf.js`.
+- WebdriverIO
+- Mocha
+- Node.js
 
 ---
 
-## Требования
+## Установка
 
-Необходимо установить Node.js и npm. Поддерживаемые версии зависят от версии WebdriverIO в `package.json`.
-
-Проверка версий:
+Клонировать репозиторий:
 
 ```bash
-node -v
-npm -v
+git clone https://github.com/osiern/wdio-project.git
 ```
 
----
-
-## Установка зависимостей
-
-В корне проекта выполните:
+Перейти в папку проекта и установить зависимости:
 
 ```bash
+cd wdio-project
 npm install
 ```
 
 ---
 
-## Запуск тестов
+## Тест-кейсы GitHub
 
-### Запуск всех тестов
+| ID | Сценарий | Проверки |
+|---|---|---|
+| TC-001 | Главная страница GitHub | URL и заголовок |
+| TC-002 | Форма авторизации | URL и отображение элементов |
+| TC-003 | Негативная авторизация | Значения полей и сообщение об ошибке |
+| TC-004 | Публичный репозиторий | URL, вкладки Code и Issues |
+| TC-005 | Переход в Issues | URL и отображение контента |
 
-```bash
-npx wdio run wdio.conf.js
-```
-
-Команда запускает тесты, выбранные настройками `wdio.conf.js`.
-
-Если в `package.json` определён скрипт `test` для запуска WDIO, можно использовать:
-
-```bash
-npm test
-```
-
-### Запуск отдельного файла
-
-Например, для `test-3.js`:
-
-```bash
-npx wdio run wdio.conf.js --spec ./test/specs/test-3.js
-```
-
-Аналогично для других файлов:
-
-```bash
-npx wdio run wdio.conf.js --spec ./test/specs/test-1.js
-npx wdio run wdio.conf.js --spec ./test/specs/test-2.js
-npx wdio run wdio.conf.js --spec ./test/specs/test-4.js
-```
-
-Если скрипт `test` в `package.json` запускает WDIO и передаёт ему аргументы, можно использовать:
-
-```bash
-npm test -- --spec ./test/specs/test-3.js
-```
+Каждый тест-кейс находится в отдельном файле `github-N.js`.
 
 ---
 
-## Пример smoke-теста
+## Организация тестов
+
+- `describe()` — группировка действий и проверок одного сценария.
+- `DATA` — объект с URL, селекторами и тестовыми значениями внутри `describe()`.
+- `it()` — действия с браузером и элементами интерфейса.
+- `check()` — проверки ожидаемых результатов через `expect()`.
+
+`check()` — пользовательская функция, реализованная на основе Mocha `it()`. Действия и проверки регистрируются как отдельные тесты Mocha.
+
+### Пример
 
 ```javascript
-describe('WebdriverIO docs smoke', () => {
-  it('Открыть главную страницу', async () => {
-    await browser.url('https://webdriver.io/');
-    await expect(browser).toHaveUrl('https://webdriver.io/');
-    await expect(browser).toHaveTitle(expect.stringContaining('WebdriverIO'));
-  });
+const { check } = require('../helpers/check');
+
+describe('TC-001: Главная страница GitHub', () => {
+    const DATA = {
+        url: 'https://github.com/',
+        title: 'GitHub',
+    };
+
+    it('Открыть главную страницу', async () => {
+        await browser.url(DATA.url);
+    });
+
+    check('Проверить URL страницы', async () => {
+        await expect(browser).toHaveUrl(DATA.url);
+    });
+
+    check('Проверить заголовок страницы', async () => {
+        await expect(browser).toHaveTitle(
+            expect.stringContaining(DATA.title)
+        );
+    });
 });
 ```
-
-Это иллюстративный пример, а не подтверждённое содержимое файлов проекта.
 
 ---
 
 ## Структура проекта
 
 ```text
-.
+wdio-project/
 ├── test/
+│   ├── helpers/
+│   │   └── check.js
 │   ├── pageobjects/
 │   │   ├── login.page.js
 │   │   ├── page.js
 │   │   └── secure.page.js
 │   └── specs/
+│       ├── github-1.js
+│       ├── github-2.js
+│       ├── github-3.js
+│       ├── github-4.js
+│       ├── github-5.js
 │       ├── test-1.js
 │       ├── test-2.js
 │       ├── test-3.js
@@ -130,29 +113,47 @@ describe('WebdriverIO docs smoke', () => {
 └── wdio.conf.js
 ```
 
-Структура приведена по ранее показанному проекту; служебные файлы и изображения могут присутствовать дополнительно.
-
 ---
 
-## Отчёты
+## Запуск тестов
 
-Типы отчётов и пути их сохранения зависят от настройки `reporters` в `wdio.conf.js`.
-
-Если подключён Allure Reporter, результаты сохраняются в `allure-results`, а Allure CLI доступен, отчёт можно сформировать командами:
+**Все тесты:**
 
 ```bash
-npx allure generate allure-results --clean -o allure-report
-npx allure open allure-report
+npx wdio run wdio.conf.js
+```
+
+**Отдельный тест:**
+
+```bash
+npx wdio run wdio.conf.js --spec ./test/specs/github-1.js
+```
+
+**Все тесты GitHub:**
+
+```bash
+npx wdio run wdio.conf.js --spec "./test/specs/github-*.js"
 ```
 
 ---
 
-## CI / GitHub Actions
+## Конфигурация
 
-Тесты можно запускать в CI, например через GitHub Actions. Наличие настроенного workflow в текущем проекте не подтверждено.
+Основные параметры `wdio.conf.js`:
+
+| Параметр | Значение |
+|---|---|
+| Runner | `local` |
+| Framework | `mocha` |
+| Browser | `chrome` |
+| Reporter | `spec` |
+| Wait timeout | `10000 ms` |
+| Mocha timeout | `60000 ms` |
+
+Результаты выполнения тестов отображаются в консоли.
 
 ---
 
 ## Назначение проекта
 
-Данный репозиторий демонстрирует базовые навыки UI-автоматизации на WebdriverIO и может использоваться как стартовый шаблон для собственных проектов.
+Практика автоматизированного UI-тестирования на JavaScript и WebdriverIO.
